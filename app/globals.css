@@ -1,0 +1,479 @@
+:root {
+  --bg: #f4f1ea;
+  --bg-accent: #efe9dd;
+  --card: #ffffff;
+  --ink: #2b2420;
+  --muted: #8a7f73;
+  --line: #e6dfd2;
+  --accent: #c2410c;
+  --accent-hover: #a63809;
+  --accent-ink: #ffffff;
+  --neutral-btn: #6b5d4f;
+  --ok-bg: #ecfdf3;
+  --ok-ink: #15803d;
+  --err-bg: #fef2f2;
+  --err-ink: #b91c1c;
+  --radius: 14px;
+  --shadow: 0 10px 30px -12px rgba(43, 36, 32, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100dvh;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-accent) 100%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Layout ---------- */
+.wrap {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: clamp(20px, 4vw, 40px) clamp(14px, 4vw, 24px)
+    clamp(40px, 8vw, 72px);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: clamp(20px, 4vw, 32px);
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: clamp(17px, 4.5vw, 20px);
+  letter-spacing: -0.01em;
+}
+
+.brand .dot {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--accent);
+  display: grid;
+  place-items: center;
+  color: var(--accent-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.navlink {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 4px;
+  white-space: nowrap;
+}
+
+.navlink:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Card ---------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: clamp(18px, 5vw, 32px);
+  box-shadow: var(--shadow);
+}
+
+.card.narrow {
+  max-width: 440px;
+}
+
+h1 {
+  font-size: clamp(20px, 5.5vw, 26px);
+  margin: 0 0 4px;
+  letter-spacing: -0.02em;
+}
+
+.sub {
+  color: var(--muted);
+  margin: 0 0 clamp(18px, 4vw, 24px);
+  font-size: 14px;
+}
+
+/* ---------- Form ---------- */
+.field {
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.req {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  /* 16px keeps iOS Safari from zooming the page on focus */
+  font-size: 16px;
+  background: #fff;
+  color: var(--ink);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input::placeholder {
+  color: #b6ab9c;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.14);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(12px, 3vw, 18px);
+}
+
+button {
+  width: 100%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: none;
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 48px;
+  transition: background 0.15s ease, filter 0.15s ease;
+}
+
+button:hover {
+  background: var(--accent-hover);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.neutral {
+  width: auto;
+  background: var(--neutral-btn);
+}
+
+button.neutral:hover {
+  filter: brightness(0.93);
+  background: var(--neutral-btn);
+}
+
+.note {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.note.ok {
+  background: var(--ok-bg);
+  color: var(--ok-ink);
+}
+
+.note.err {
+  background: var(--err-bg);
+  color: var(--err-ink);
+}
+
+/* ---------- Admin toolbar ---------- */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.toolbar input {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.toolbar button {
+  flex: 0 0 auto;
+}
+
+.count {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ---------- Table ---------- */
+.tablewrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 calc(-1 * clamp(18px, 5vw, 32px)) 0;
+  padding: 0 clamp(18px, 5vw, 32px);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 540px;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+th {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  position: sticky;
+  top: 0;
+  background: var(--card);
+}
+
+tbody tr:hover {
+  background: #faf7f1;
+}
+
+.qty {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.empty {
+  color: var(--muted);
+  padding: 40px 0;
+  text-align: center;
+}
+
+/* ---------- Prefilled (read-only) fields ---------- */
+.prefill-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.prefill-wrap input {
+  flex: 1;
+  min-width: 0;
+}
+
+input.prefilled {
+  background: #f3efe8;
+  color: #6b5d4f;
+  cursor: default;
+  font-weight: 600;
+}
+
+input.prefilled:focus {
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+.suffix {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---------- Computed total line (form) ---------- */
+.total-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  margin: 4px 0 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f3efe8;
+}
+
+.total-line span {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.total-line strong {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+/* ---------- Spacing / section helpers ---------- */
+.mt {
+  margin-top: 20px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+/* ---------- Field order editor ---------- */
+.order-list {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+}
+
+.order-item .pos {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  width: 18px;
+  flex: 0 0 auto;
+}
+
+.order-item .name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.order-btns {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.iconbtn {
+  width: 36px;
+  height: 36px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.iconbtn:hover:not(:disabled) {
+  background: #f3efe8;
+}
+
+.iconbtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ---------- Breakpoints ---------- */
+/* Stack the Date / Paratha Qty pair on narrow phones */
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile card-style table: turn rows into stacked cards */
+@media (max-width: 560px) {
+  .tablewrap {
+    overflow-x: visible;
+    margin: 0;
+    padding: 0;
+  }
+  table {
+    min-width: 0;
+  }
+  thead {
+    display: none;
+  }
+  table,
+  tbody,
+  tr,
+  td {
+    display: block;
+    width: 100%;
+  }
+  tr {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 6px 2px;
+    margin-bottom: 12px;
+    background: #fff;
+  }
+  tbody tr:hover {
+    background: #fff;
+  }
+  td {
+    border: none;
+    padding: 8px 14px;
+    white-space: normal;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    text-align: right;
+  }
+  td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: left;
+  }
+}

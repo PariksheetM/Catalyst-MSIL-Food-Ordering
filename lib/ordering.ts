@@ -3,7 +3,7 @@
 // (which runs in UTC on Vercel). Shared by the form (client) and /api/submit.
 
 export const ORDER_TIMING_NOTE =
-  "Order timing is from 6:00 AM to 7:30 PM only. Same-day orders must be placed before 7:30 AM — after the cut-off, please order for the next day.";
+  "Order timing is from 6:00 AM to 7:30 AM";
 
 const CUTOFF_MINUTES = 7 * 60 + 30; // 7:30 AM
 

@@ -269,17 +269,21 @@ export default function AdminPage() {
 
   return (
     <div className="wrap wide">
-      <div className={`topbar${!authed ? " login" : ""}`}>
-        {!authed && <span className="tb-spacer" aria-hidden="true" />}
+      <div className={`topbar${!authed ? " centered" : ""}`}>
         <div className="brand">
           <span className="dot">C</span>
           <span>Catalyst-MSIL Food Ordering · Admin</span>
         </div>
-        <img className="topbar-logo" src="/catalyst-logo.png" alt="Catalyst" />
+        {authed && (
+          <img className="topbar-logo" src="/catalyst-logo.png" alt="Catalyst" />
+        )}
       </div>
 
       {!authed ? (
         <div className="login-view">
+          <div className="page-logo">
+            <img src="/catalyst-logo.png" alt="Catalyst" />
+          </div>
           <div className="card narrow">
             <h1>Admin sign in</h1>
             <p className="sub">Enter the admin password to view records.</p>

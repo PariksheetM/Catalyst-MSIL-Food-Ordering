@@ -57,6 +57,11 @@ body {
   margin: 0 auto;
 }
 
+/* Wide layout for the admin dashboard, so the records table fits fully */
+.wrap.wide {
+  max-width: 1320px;
+}
+
 .topbar {
   display: flex;
   align-items: center;
@@ -109,7 +114,7 @@ body {
 }
 
 .page-logo img {
-  width: clamp(160px, 46%, 240px);
+  width: clamp(130px, 34%, 180px);
   height: auto;
   object-fit: contain;
 }
@@ -285,14 +290,14 @@ button.neutral.on:hover {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 13.5px;
   min-width: 540px;
 }
 
 th,
 td {
   text-align: left;
-  padding: 12px 14px;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--line);
   white-space: nowrap;
 }

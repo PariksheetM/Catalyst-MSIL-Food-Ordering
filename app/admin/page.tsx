@@ -268,7 +268,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="wrap">
+    <div className="wrap wide">
       <div className="topbar">
         <div className="brand">
           <span className="dot">C</span>
@@ -304,7 +304,11 @@ export default function AdminPage() {
           </div>
         </div>
       ) : (
-        <div className="card">
+        <>
+          <div className="page-logo">
+            <img src="/catalyst-logo.png" alt="Catalyst" />
+          </div>
+          <div className="card">
           <div className="toolbar">
             <input
               type="text"
@@ -524,7 +528,10 @@ export default function AdminPage() {
                         ₹{((r.rate || 0) * (r.paratha_qty || 0)).toLocaleString()}
                       </td>
                       <td data-label="Submitted">
-                        {new Date(r.created_at).toLocaleString()}
+                        {new Date(r.created_at).toLocaleString(undefined, {
+                          dateStyle: "short",
+                          timeStyle: "short",
+                        })}
                       </td>
                       <td data-label="Actions" className="actions">
                         <button
@@ -562,6 +569,7 @@ export default function AdminPage() {
             )}
           </div>
         </div>
+        </>
       )}
     </div>
   );

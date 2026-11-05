@@ -115,6 +115,34 @@ body {
   flex: 0 0 auto;
 }
 
+/* Centered heading (home form, and admin sign-in) */
+.topbar.centered {
+  justify-content: center;
+}
+
+.topbar.login {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.topbar.login .brand {
+  justify-self: center;
+}
+
+.topbar.login .topbar-logo {
+  justify-self: end;
+}
+
+/* Ordering-window note under the form */
+.timing-note {
+  margin: 14px 4px 0;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 /* ---------- Page logo ---------- */
 .page-logo {
   display: flex;
@@ -607,6 +635,14 @@ td.actions {
   }
   .editor-grid {
     grid-template-columns: 1fr;
+  }
+  .topbar.login {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .topbar.login .tb-spacer {
+    display: none;
   }
 }
 

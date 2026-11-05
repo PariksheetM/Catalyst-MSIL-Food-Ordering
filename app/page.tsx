@@ -7,6 +7,7 @@ import {
   normalizeOrder,
   type FieldKey,
 } from "@/lib/fields";
+import { checkOrderTiming, ORDER_TIMING_NOTE } from "@/lib/ordering";
 
 function today() {
   const d = new Date();
@@ -54,6 +55,11 @@ export default function HomePage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMsg(null);
+    const timingError = checkOrderTiming(entryDate);
+    if (timingError) {
+      setMsg({ ok: false, text: timingError });
+      return;
+    }
     setStatus("saving");
     try {
       const res = await fetch("/api/submit", {
@@ -132,7 +138,7 @@ export default function HomePage() {
 
   return (
     <div className="wrap">
-      <div className="topbar">
+      <div className="topbar centered">
         <div className="brand">
           <span className="dot">C</span>
           <span>Catalyst-MSIL Food Ordering</span>
@@ -174,6 +180,7 @@ export default function HomePage() {
           )}
         </form>
         </div>
+        <p className="timing-note">{ORDER_TIMING_NOTE}</p>
       </div>
     </div>
   );

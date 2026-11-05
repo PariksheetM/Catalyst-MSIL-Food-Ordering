@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { FIELD_DEFS } from "@/lib/fields";
+import { checkOrderTiming } from "@/lib/ordering";
 
 export const runtime = "nodejs";
 
@@ -40,6 +41,12 @@ export async function POST(req: Request) {
       { error: "Paratha quantity must be a whole number (0 or more)." },
       { status: 400 }
     );
+  }
+
+  // Enforce the ordering window / same-day 7:30 AM cut-off (server-authoritative).
+  const timingError = checkOrderTiming(date);
+  if (timingError) {
+    return NextResponse.json({ error: timingError }, { status: 400 });
   }
 
   // Item name and rate are prefilled/fixed fields. Use the incoming value when

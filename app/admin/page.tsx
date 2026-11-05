@@ -269,7 +269,8 @@ export default function AdminPage() {
 
   return (
     <div className="wrap wide">
-      <div className="topbar">
+      <div className={`topbar${!authed ? " login" : ""}`}>
+        {!authed && <span className="tb-spacer" aria-hidden="true" />}
         <div className="brand">
           <span className="dot">C</span>
           <span>Catalyst-MSIL Food Ordering · Admin</span>

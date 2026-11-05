@@ -139,12 +139,13 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="page-logo">
-        <img src="/catalyst-logo.png" alt="Catalyst" />
-      </div>
+      <div className="form-shell">
+        <div className="page-logo">
+          <img src="/catalyst-logo.png" alt="Catalyst" />
+        </div>
 
-      <div className="card">
-        <h1>Submit a record</h1>
+        <div className="card">
+          <h1>Submit a record</h1>
         <p className="sub">Fill in the details below and submit.</p>
 
         <form onSubmit={onSubmit} noValidate>
@@ -172,6 +173,7 @@ export default function HomePage() {
             <div className={`note ${msg.ok ? "ok" : "err"}`}>{msg.text}</div>
           )}
         </form>
+        </div>
       </div>
     </div>
   );

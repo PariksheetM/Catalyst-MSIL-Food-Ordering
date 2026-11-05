@@ -95,6 +95,25 @@ body {
   text-decoration: underline;
 }
 
+/* ---------- Page logo ---------- */
+.page-logo {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 22px;
+}
+
+.page-logo img {
+  width: clamp(200px, 56%, 300px);
+  height: auto;
+  object-fit: contain;
+}
+
+/* Centers the admin login column (logo + card) on the page */
+.login-view {
+  max-width: 440px;
+  margin: 24px auto 0;
+}
+
 /* ---------- Card ---------- */
 .card {
   background: var(--card);
@@ -122,14 +141,14 @@ h1 {
 
 /* ---------- Form ---------- */
 .field {
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 label {
   display: block;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
-  margin-bottom: 7px;
+  margin-bottom: 6px;
 }
 
 .req {
@@ -139,11 +158,10 @@ label {
 
 input {
   width: 100%;
-  padding: 13px 14px;
+  padding: 10px 13px;
   border: 1px solid var(--line);
-  border-radius: 10px;
-  /* 16px keeps iOS Safari from zooming the page on focus */
-  font-size: 16px;
+  border-radius: 9px;
+  font-size: 15px;
   background: #fff;
   color: var(--ink);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -170,12 +188,13 @@ button {
   background: var(--accent);
   color: var(--accent-ink);
   border: none;
-  border-radius: 10px;
-  padding: 14px 20px;
-  font-size: 16px;
+  border-radius: 8px;
+  padding: 9px 16px;
+  font-size: 14px;
   font-weight: 600;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  min-height: 48px;
+  min-height: 38px;
   transition: background 0.15s ease, filter 0.15s ease;
 }
 
@@ -196,6 +215,15 @@ button.neutral {
 button.neutral:hover {
   filter: brightness(0.93);
   background: var(--neutral-btn);
+}
+
+button.neutral.on {
+  background: var(--accent);
+}
+
+button.neutral.on:hover {
+  background: var(--accent-hover);
+  filter: none;
 }
 
 .note {
@@ -420,10 +448,69 @@ input.prefilled:focus {
   cursor: not-allowed;
 }
 
+/* ---------- Collapsible order panel ---------- */
+.order-panel {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 4px 0 20px;
+  background: #faf7f1;
+}
+
+/* ---------- Aggregate stat tiles ---------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 4px 0 18px;
+}
+
+.stat {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: #faf7f1;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat.price .stat-value {
+  color: var(--accent);
+}
+
+/* ---------- Table totals row ---------- */
+.totals-row td {
+  font-weight: 700;
+  border-top: 2px solid var(--line);
+  border-bottom: none;
+  background: #f3efe8;
+}
+
 /* ---------- Breakpoints ---------- */
 /* Stack the Date / Paratha Qty pair on narrow phones */
 @media (max-width: 480px) {
   .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Stack the aggregate tiles on narrow screens */
+@media (max-width: 560px) {
+  .stats {
     grid-template-columns: 1fr;
   }
 }
@@ -438,7 +525,8 @@ input.prefilled:focus {
   table {
     min-width: 0;
   }
-  thead {
+  thead,
+  tfoot {
     display: none;
   }
   table,

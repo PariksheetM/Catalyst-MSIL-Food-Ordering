@@ -134,9 +134,13 @@ export default function HomePage() {
     <div className="wrap">
       <div className="topbar">
         <div className="brand">
-          <span className="dot">P</span>
-          <span>Portal</span>
+          <span className="dot">C</span>
+          <span>Catalyst-MSIL Food Ordering</span>
         </div>
+      </div>
+
+      <div className="page-logo">
+        <img src="/catalyst-logo.png" alt="Catalyst" />
       </div>
 
       <div className="card">

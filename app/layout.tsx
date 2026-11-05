@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Portal",
-  description: "Submit and review records.",
+  title: "Catalyst-MSIL Food Ordering",
+  description: "Submit and review food orders.",
 };
 
 export default function RootLayout({

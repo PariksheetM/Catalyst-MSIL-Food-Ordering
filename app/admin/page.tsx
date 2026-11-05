@@ -274,13 +274,11 @@ export default function AdminPage() {
           <span className="dot">C</span>
           <span>Catalyst-MSIL Food Ordering · Admin</span>
         </div>
+        <img className="topbar-logo" src="/catalyst-logo.png" alt="Catalyst" />
       </div>
 
       {!authed ? (
         <div className="login-view">
-          <div className="page-logo">
-            <img src="/catalyst-logo.png" alt="Catalyst" />
-          </div>
           <div className="card narrow">
             <h1>Admin sign in</h1>
             <p className="sub">Enter the admin password to view records.</p>
@@ -305,9 +303,6 @@ export default function AdminPage() {
         </div>
       ) : (
         <>
-          <div className="page-logo">
-            <img src="/catalyst-logo.png" alt="Catalyst" />
-          </div>
           <div className="card">
           <div className="toolbar">
             <input
@@ -552,19 +547,6 @@ export default function AdminPage() {
                     </tr>
                   ))}
                 </tbody>
-                <tfoot>
-                  <tr className="totals-row">
-                    <td>Totals</td>
-                    <td></td>
-                    <td className="qty">{totalParathas}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td className="qty">₹{totalAmount.toLocaleString()}</td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                </tfoot>
               </table>
             )}
           </div>

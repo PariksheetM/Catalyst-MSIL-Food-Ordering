@@ -16,9 +16,7 @@ export async function GET(req: Request) {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from("paratha_records")
-      .select(
-        "id, entry_date, paratha_qty, emp_name, meal_type, item_name, rate, created_at"
-      )
+      .select("*")
       .order("entry_date", { ascending: false })
       .order("created_at", { ascending: false })
       .limit(5000);

@@ -3,9 +3,9 @@
 // (which runs in UTC on Vercel). Shared by the form (client) and /api/submit.
 
 export const ORDER_TIMING_NOTE =
-  "Order timing is from 6:00 AM to 7:30 AM";
+  "Order timing is from 6:00 AM to 8:00 AM";
 
-const CUTOFF_MINUTES = 7 * 60 + 30; // 7:30 AM
+const CUTOFF_MINUTES = 8 * 60; // 8:00 AM
 
 function istNow(now: Date): { date: string; minutes: number } {
   const fmt = new Intl.DateTimeFormat("en-CA", {
@@ -36,10 +36,10 @@ export function checkOrderTiming(
   const { date: today, minutes } = istNow(now);
 
   if (entryDate < today) {
-    return "You can't order for a past date. Please choose today (before 7:30 AM) or a future date.";
+    return "You can't order for a past date. Please choose today (before 8:00 AM) or a future date.";
   }
   if (entryDate === today && minutes >= CUTOFF_MINUTES) {
-    return "Ordering for today has closed — the cut-off is 7:30 AM. You can still place an order for tomorrow or a later date.";
+    return "Ordering for today has closed — the cut-off is 8:00 AM. You can still place an order for tomorrow or a later date.";
   }
   return null;
 }

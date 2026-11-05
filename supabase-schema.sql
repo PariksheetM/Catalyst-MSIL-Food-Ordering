@@ -18,6 +18,12 @@ alter table public.paratha_records
 alter table public.paratha_records
   add column if not exists rate numeric not null default 12;
 
+-- Mandatory contact fields (added if the table already existed).
+alter table public.paratha_records
+  add column if not exists employee_id text not null default '';
+alter table public.paratha_records
+  add column if not exists mobile_no text not null default '';
+
 create index if not exists paratha_records_entry_date_idx
   on public.paratha_records (entry_date desc);
 
@@ -27,7 +33,7 @@ alter table public.paratha_records enable row level security;
 create table if not exists public.form_settings (
   id          int primary key default 1,
   field_order jsonb not null default
-    '["emp_name","entry_date","paratha_qty","meal_type","item_name","rate"]'::jsonb,
+    '["emp_name","employee_id","mobile_no","entry_date","paratha_qty","meal_type","item_name","rate"]'::jsonb,
   updated_at  timestamptz not null default now(),
   constraint form_settings_singleton check (id = 1)
 );

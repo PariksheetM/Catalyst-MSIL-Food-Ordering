@@ -13,6 +13,8 @@ type Record = {
   entry_date: string;
   paratha_qty: number;
   emp_name: string;
+  employee_id: string;
+  mobile_no: string;
   meal_type: string;
   item_name: string;
   rate: number;
@@ -30,6 +32,8 @@ function today() {
 function emptyRec() {
   return {
     emp_name: "",
+    employee_id: "",
+    mobile_no: "",
     entry_date: today(),
     paratha_qty: "",
     meal_type: "",
@@ -207,6 +211,8 @@ export default function AdminPage() {
     const XLSX = await import("xlsx");
     const rows = records.map((r) => ({
       "Emp Name": r.emp_name,
+      "Employee ID": r.employee_id,
+      "Mobile No": r.mobile_no,
       Date: r.entry_date,
       "Paratha Qty": r.paratha_qty,
       "Meal Type": r.meal_type,
@@ -338,6 +344,28 @@ export default function AdminPage() {
                   <input
                     value={rec.emp_name}
                     onChange={(e) => setField("emp_name", e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label>
+                    Employee ID <span className="req">*</span>
+                  </label>
+                  <input
+                    value={rec.employee_id}
+                    onChange={(e) => setField("employee_id", e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label>
+                    Mobile No <span className="req">*</span>
+                  </label>
+                  <input
+                    value={rec.mobile_no}
+                    onChange={(e) => setField("mobile_no", e.target.value)}
+                    inputMode="numeric"
+                    maxLength={10}
                     required
                   />
                 </div>
@@ -491,6 +519,8 @@ export default function AdminPage() {
                 <thead>
                   <tr>
                     <th>Emp Name</th>
+                    <th>Employee ID</th>
+                    <th>Mobile No</th>
                     <th>Date</th>
                     <th>Paratha Qty</th>
                     <th>Meal Type</th>
@@ -504,6 +534,8 @@ export default function AdminPage() {
                   {filtered.map((r) => (
                     <tr key={r.id}>
                       <td data-label="Emp Name">{r.emp_name}</td>
+                      <td data-label="Employee ID">{r.employee_id}</td>
+                      <td data-label="Mobile No">{r.mobile_no}</td>
                       <td data-label="Date">{r.entry_date}</td>
                       <td className="qty" data-label="Paratha Qty">
                         {r.paratha_qty}

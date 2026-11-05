@@ -4,6 +4,8 @@
 
 export type FieldKey =
   | "emp_name"
+  | "employee_id"
+  | "mobile_no"
   | "entry_date"
   | "paratha_qty"
   | "meal_type"
@@ -26,6 +28,20 @@ export const FIELD_DEFS: Record<FieldKey, FieldDef> = {
     label: "Emp Name",
     kind: "text",
     placeholder: "Your name",
+    required: true,
+  },
+  employee_id: {
+    key: "employee_id",
+    label: "Employee ID",
+    kind: "text",
+    placeholder: "Your employee ID",
+    required: true,
+  },
+  mobile_no: {
+    key: "mobile_no",
+    label: "Mobile No",
+    kind: "text",
+    placeholder: "10-digit mobile number",
     required: true,
   },
   entry_date: {
@@ -67,6 +83,8 @@ export const FIELD_DEFS: Record<FieldKey, FieldDef> = {
 
 export const DEFAULT_FIELD_ORDER: FieldKey[] = [
   "emp_name",
+  "employee_id",
+  "mobile_no",
   "entry_date",
   "paratha_qty",
   "meal_type",

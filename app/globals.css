@@ -59,7 +59,7 @@ body {
 
 /* Wide layout for the admin dashboard, so the records table fits fully */
 .wrap.wide {
-  max-width: 1320px;
+  max-width: 1480px;
 }
 
 .topbar {

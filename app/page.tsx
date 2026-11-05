@@ -17,6 +17,8 @@ function today() {
 
 export default function HomePage() {
   const [empName, setEmpName] = useState("");
+  const [employeeId, setEmployeeId] = useState("");
+  const [mobileNo, setMobileNo] = useState("");
   const [entryDate, setEntryDate] = useState(today());
   const [parathaQty, setParathaQty] = useState("");
   const [mealType, setMealType] = useState("");
@@ -40,6 +42,8 @@ export default function HomePage() {
 
   const editable: Record<string, string> = {
     emp_name: empName,
+    employee_id: employeeId,
+    mobile_no: mobileNo,
     entry_date: entryDate,
     paratha_qty: parathaQty,
     meal_type: mealType,
@@ -47,6 +51,8 @@ export default function HomePage() {
 
   function setValue(key: FieldKey, v: string) {
     if (key === "emp_name") setEmpName(v);
+    else if (key === "employee_id") setEmployeeId(v);
+    else if (key === "mobile_no") setMobileNo(v);
     else if (key === "entry_date") setEntryDate(v);
     else if (key === "paratha_qty") setParathaQty(v);
     else if (key === "meal_type") setMealType(v);
@@ -67,6 +73,8 @@ export default function HomePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           emp_name: empName,
+          employee_id: employeeId,
+          mobile_no: mobileNo,
           entry_date: entryDate,
           paratha_qty: parathaQty,
           meal_type: mealType,
@@ -80,6 +88,8 @@ export default function HomePage() {
       } else {
         setMsg({ ok: true, text: "Record submitted. Thank you!" });
         setEmpName("");
+        setEmployeeId("");
+        setMobileNo("");
         setParathaQty("");
         setMealType("");
         setEntryDate(today());
@@ -123,7 +133,10 @@ export default function HomePage() {
           type={
             def.kind === "number" ? "number" : def.kind === "date" ? "date" : "text"
           }
-          inputMode={def.kind === "number" ? "numeric" : undefined}
+          inputMode={
+            def.kind === "number" || key === "mobile_no" ? "numeric" : undefined
+          }
+          maxLength={key === "mobile_no" ? 10 : undefined}
           min={def.kind === "number" ? "0" : undefined}
           step={def.kind === "number" ? "1" : undefined}
           autoComplete={key === "emp_name" ? "name" : undefined}

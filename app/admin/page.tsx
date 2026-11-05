@@ -21,6 +21,23 @@ type Record = {
 
 const STORAGE_KEY = "paratha_admin_pw";
 
+function today() {
+  const d = new Date();
+  const tz = d.getTimezoneOffset() * 60000;
+  return new Date(d.getTime() - tz).toISOString().slice(0, 10);
+}
+
+function emptyRec() {
+  return {
+    emp_name: "",
+    entry_date: today(),
+    paratha_qty: "",
+    meal_type: "",
+    item_name: FIELD_DEFS.item_name.prefill ?? "",
+    rate: FIELD_DEFS.rate.prefill ?? "",
+  };
+}
+
 export default function AdminPage() {
   const [pw, setPw] = useState("");
   const [authed, setAuthed] = useState(false);
@@ -34,6 +51,14 @@ export default function AdminPage() {
   const [order, setOrder] = useState<FieldKey[]>(DEFAULT_FIELD_ORDER);
   const [savingOrder, setSavingOrder] = useState(false);
   const [orderMsg, setOrderMsg] = useState<{ ok: boolean; text: string } | null>(
+    null
+  );
+
+  // Record editor (create / edit) state.
+  const [editing, setEditing] = useState<{ id: number | null } | null>(null);
+  const [rec, setRec] = useState(emptyRec());
+  const [savingRec, setSavingRec] = useState(false);
+  const [recMsg, setRecMsg] = useState<{ ok: boolean; text: string } | null>(
     null
   );
 
@@ -95,6 +120,7 @@ export default function AdminPage() {
     setAuthed(false);
     setPw("");
     setRecords([]);
+    setEditing(null);
     try {
       sessionStorage.removeItem(STORAGE_KEY);
     } catch {}
@@ -117,10 +143,7 @@ export default function AdminPage() {
     try {
       const res = await fetch("/api/fields", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-admin-password": pw,
-        },
+        headers: { "Content-Type": "application/json", "x-admin-password": pw },
         body: JSON.stringify({ order }),
       });
       const d = await res.json();
@@ -137,6 +160,83 @@ export default function AdminPage() {
       setOrderMsg({ ok: false, text: "Network error. Please try again." });
     } finally {
       setSavingOrder(false);
+    }
+  }
+
+  // ----- Record CRUD -----
+  function openCreate() {
+    setRecMsg(null);
+    setRec(emptyRec());
+    setEditing({ id: null });
+  }
+
+  function openEdit(r: Record) {
+    setRecMsg(null);
+    setRec({
+      emp_name: r.emp_name,
+      entry_date: r.entry_date,
+      paratha_qty: String(r.paratha_qty),
+      meal_type: r.meal_type,
+      item_name: r.item_name,
+      rate: String(r.rate),
+    });
+    setEditing({ id: r.id });
+  }
+
+  function closeEditor() {
+    setEditing(null);
+    setRecMsg(null);
+  }
+
+  async function saveRecord(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editing) return;
+    setSavingRec(true);
+    setRecMsg(null);
+    const isEdit = editing.id !== null;
+    const url = isEdit ? `/api/records/${editing.id}` : "/api/records";
+    try {
+      const res = await fetch(url, {
+        method: isEdit ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json", "x-admin-password": pw },
+        body: JSON.stringify(rec),
+      });
+      const d = await res.json();
+      if (!res.ok) {
+        setRecMsg({ ok: false, text: d.error || "Could not save the record." });
+      } else {
+        setEditing(null);
+        load(pw);
+      }
+    } catch {
+      setRecMsg({ ok: false, text: "Network error. Please try again." });
+    } finally {
+      setSavingRec(false);
+    }
+  }
+
+  async function deleteRecord(r: Record) {
+    if (
+      !window.confirm(
+        `Delete this record for ${r.emp_name} (${r.entry_date})? This cannot be undone.`
+      )
+    ) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/records/${r.id}`, {
+        method: "DELETE",
+        headers: { "x-admin-password": pw },
+      });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(d.error || "Could not delete the record.");
+      } else {
+        if (editing && editing.id === r.id) setEditing(null);
+        load(pw);
+      }
+    } catch {
+      setError("Network error. Please try again.");
     }
   }
 
@@ -159,12 +259,13 @@ export default function AdminPage() {
 
   const totalAmount = useMemo(
     () =>
-      filtered.reduce(
-        (sum, r) => sum + (r.rate || 0) * (r.paratha_qty || 0),
-        0
-      ),
+      filtered.reduce((sum, r) => sum + (r.rate || 0) * (r.paratha_qty || 0), 0),
     [filtered]
   );
+
+  function setField(k: keyof ReturnType<typeof emptyRec>, v: string) {
+    setRec((prev) => ({ ...prev, [k]: v }));
+  }
 
   return (
     <div className="wrap">
@@ -182,24 +283,24 @@ export default function AdminPage() {
           </div>
           <div className="card narrow">
             <h1>Admin sign in</h1>
-          <p className="sub">Enter the admin password to view records.</p>
-          <form onSubmit={onLogin}>
-            <div className="field">
-              <label htmlFor="pw">Password</label>
-              <input
-                id="pw"
-                type="password"
-                value={pw}
-                onChange={(e) => setPw(e.target.value)}
-                placeholder="••••••••"
-                autoFocus
-              />
-            </div>
-            <button type="submit" disabled={loading || !pw}>
-              {loading ? "Checking…" : "View records"}
-            </button>
-            {error && <div className="note err">{error}</div>}
-          </form>
+            <p className="sub">Enter the admin password to view records.</p>
+            <form onSubmit={onLogin}>
+              <div className="field">
+                <label htmlFor="pw">Password</label>
+                <input
+                  id="pw"
+                  type="password"
+                  value={pw}
+                  onChange={(e) => setPw(e.target.value)}
+                  placeholder="••••••••"
+                  autoFocus
+                />
+              </div>
+              <button type="submit" disabled={loading || !pw}>
+                {loading ? "Checking…" : "View records"}
+              </button>
+              {error && <div className="note err">{error}</div>}
+            </form>
           </div>
         </div>
       ) : (
@@ -211,6 +312,9 @@ export default function AdminPage() {
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
             />
+            <button type="button" onClick={openCreate}>
+              + Add record
+            </button>
             <button
               type="button"
               className={`neutral${showOrder ? " on" : ""}`}
@@ -225,6 +329,95 @@ export default function AdminPage() {
               Sign out
             </button>
           </div>
+
+          {/* Record editor (create / edit) */}
+          {editing && (
+            <form className="editor" onSubmit={saveRecord}>
+              <p className="section-title">
+                {editing.id === null ? "Add record" : "Edit record"}
+              </p>
+              <div className="editor-grid">
+                <div className="field">
+                  <label>
+                    Emp Name <span className="req">*</span>
+                  </label>
+                  <input
+                    value={rec.emp_name}
+                    onChange={(e) => setField("emp_name", e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label>
+                    Date <span className="req">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    value={rec.entry_date}
+                    onChange={(e) => setField("entry_date", e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label>
+                    Paratha Qty <span className="req">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={rec.paratha_qty}
+                    onChange={(e) => setField("paratha_qty", e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label>
+                    Meal Type <span className="req">*</span>
+                  </label>
+                  <input
+                    value={rec.meal_type}
+                    onChange={(e) => setField("meal_type", e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="field">
+                  <label>Item Name</label>
+                  <input
+                    value={rec.item_name}
+                    onChange={(e) => setField("item_name", e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label>Rate</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={rec.rate}
+                    onChange={(e) => setField("rate", e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="editor-actions">
+                <button type="submit" disabled={savingRec}>
+                  {savingRec
+                    ? "Saving…"
+                    : editing.id === null
+                      ? "Create record"
+                      : "Save changes"}
+                </button>
+                <button type="button" className="neutral" onClick={closeEditor}>
+                  Cancel
+                </button>
+              </div>
+              {recMsg && (
+                <div className={`note ${recMsg.ok ? "ok" : "err"}`}>
+                  {recMsg.text}
+                </div>
+              )}
+            </form>
+          )}
 
           {/* Collapsible field-order editor */}
           {showOrder && (
@@ -290,9 +483,7 @@ export default function AdminPage() {
             </div>
             <div className="stat price">
               <span className="stat-label">Total Price</span>
-              <span className="stat-value">
-                ₹{totalAmount.toLocaleString()}
-              </span>
+              <span className="stat-value">₹{totalAmount.toLocaleString()}</span>
             </div>
           </div>
 
@@ -313,6 +504,7 @@ export default function AdminPage() {
                     <th>Rate</th>
                     <th>Total</th>
                     <th>Submitted</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -334,6 +526,22 @@ export default function AdminPage() {
                       <td data-label="Submitted">
                         {new Date(r.created_at).toLocaleString()}
                       </td>
+                      <td data-label="Actions" className="actions">
+                        <button
+                          type="button"
+                          className="rowbtn"
+                          onClick={() => openEdit(r)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="rowbtn danger"
+                          onClick={() => deleteRecord(r)}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -346,6 +554,7 @@ export default function AdminPage() {
                     <td></td>
                     <td></td>
                     <td className="qty">₹{totalAmount.toLocaleString()}</td>
+                    <td></td>
                     <td></td>
                   </tr>
                 </tfoot>

@@ -265,6 +265,7 @@ button.neutral.on:hover {
 
 .toolbar button {
   flex: 0 0 auto;
+  width: auto;
 }
 
 .count {
@@ -323,14 +324,11 @@ tbody tr:hover {
 
 /* ---------- Prefilled (read-only) fields ---------- */
 .prefill-wrap {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  position: relative;
 }
 
 .prefill-wrap input {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
 }
 
 input.prefilled {
@@ -340,16 +338,26 @@ input.prefilled {
   font-weight: 600;
 }
 
+/* Room for the suffix so the input stays the same width as every other field */
+input.prefilled.has-suffix {
+  padding-right: 92px;
+}
+
 input.prefilled:focus {
   border-color: var(--line);
   box-shadow: none;
 }
 
 .suffix {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--muted);
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
+  pointer-events: none;
 }
 
 /* ---------- Computed total line (form) ---------- */
@@ -506,6 +514,70 @@ input.prefilled:focus {
   background: #f3efe8;
 }
 
+/* ---------- Record editor (admin) ---------- */
+.editor {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 4px 0 20px;
+  background: #faf7f1;
+}
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  margin-top: 12px;
+}
+
+.editor-grid .field {
+  margin-bottom: 0;
+}
+
+.editor-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.editor-actions button {
+  width: auto;
+}
+
+/* ---------- Row action buttons ---------- */
+td.actions {
+  white-space: nowrap;
+}
+
+.rowbtn {
+  width: auto;
+  min-height: 0;
+  padding: 5px 11px;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+
+.rowbtn:hover {
+  background: #f3efe8;
+}
+
+.rowbtn + .rowbtn {
+  margin-left: 6px;
+}
+
+.rowbtn.danger {
+  color: var(--err-ink);
+  border-color: #f0c4c4;
+}
+
+.rowbtn.danger:hover {
+  background: var(--err-bg);
+}
+
 /* ---------- Breakpoints ---------- */
 /* Stack the Date / Paratha Qty pair on narrow phones */
 @media (max-width: 480px) {
@@ -514,9 +586,12 @@ input.prefilled:focus {
   }
 }
 
-/* Stack the aggregate tiles on narrow screens */
+/* Stack the aggregate tiles and editor fields on narrow screens */
 @media (max-width: 560px) {
   .stats {
+    grid-template-columns: 1fr;
+  }
+  .editor-grid {
     grid-template-columns: 1fr;
   }
 }

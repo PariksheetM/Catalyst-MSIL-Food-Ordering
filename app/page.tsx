@@ -94,7 +94,7 @@ export default function HomePage() {
           <label>{def.label}</label>
           <div className="prefill-wrap">
             <input
-              className="prefilled"
+              className={`prefilled${def.suffix ? " has-suffix" : ""}`}
               type="text"
               value={def.prefill ?? ""}
               readOnly

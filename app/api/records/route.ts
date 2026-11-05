@@ -1,31 +1,15 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase";
+import { checkAdmin, parseRecord } from "@/lib/records";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function timingSafeEqual(a: string, b: string) {
-  // Constant-time-ish comparison to avoid leaking length/char timing.
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) {
-    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return diff === 0;
-}
-
+// List all records (admin only).
 export async function GET(req: Request) {
-  const expected = process.env.ADMIN_PASSWORD;
-  if (!expected) {
-    return NextResponse.json(
-      { error: "Admin password is not configured on the server." },
-      { status: 500 }
-    );
-  }
-
-  const provided = req.headers.get("x-admin-password") ?? "";
-  if (!timingSafeEqual(provided, expected)) {
-    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  const auth = checkAdmin(req);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
 
   try {
@@ -54,4 +38,46 @@ export async function GET(req: Request) {
       { status: 500 }
     );
   }
+}
+
+// Create a record (admin only).
+export async function POST(req: Request) {
+  const auth = checkAdmin(req);
+  if (!auth.ok) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
+  }
+
+  const parsed = parseRecord(body);
+  if (!parsed.ok) {
+    return NextResponse.json({ error: parsed.error }, { status: 400 });
+  }
+
+  try {
+    const supabase = getSupabaseAdmin();
+    const { error } = await supabase
+      .from("paratha_records")
+      .insert(parsed.value);
+    if (error) {
+      console.error("Insert failed:", error.message);
+      return NextResponse.json(
+        { error: "Could not create the record." },
+        { status: 500 }
+      );
+    }
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json(
+      { error: "Server is not configured." },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({ ok: true });
 }

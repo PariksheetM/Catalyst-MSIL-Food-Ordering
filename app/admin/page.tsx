@@ -170,19 +170,6 @@ export default function AdminPage() {
     setEditing({ id: null });
   }
 
-  function openEdit(r: Record) {
-    setRecMsg(null);
-    setRec({
-      emp_name: r.emp_name,
-      entry_date: r.entry_date,
-      paratha_qty: String(r.paratha_qty),
-      meal_type: r.meal_type,
-      item_name: r.item_name,
-      rate: String(r.rate),
-    });
-    setEditing({ id: r.id });
-  }
-
   function closeEditor() {
     setEditing(null);
     setRecMsg(null);
@@ -215,29 +202,24 @@ export default function AdminPage() {
     }
   }
 
-  async function deleteRecord(r: Record) {
-    if (
-      !window.confirm(
-        `Delete this record for ${r.emp_name} (${r.entry_date})? This cannot be undone.`
-      )
-    ) {
-      return;
-    }
-    try {
-      const res = await fetch(`/api/records/${r.id}`, {
-        method: "DELETE",
-        headers: { "x-admin-password": pw },
-      });
-      const d = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(d.error || "Could not delete the record.");
-      } else {
-        if (editing && editing.id === r.id) setEditing(null);
-        load(pw);
-      }
-    } catch {
-      setError("Network error. Please try again.");
-    }
+  async function exportExcel() {
+    if (records.length === 0) return;
+    const XLSX = await import("xlsx");
+    const rows = records.map((r) => ({
+      "Emp Name": r.emp_name,
+      Date: r.entry_date,
+      "Paratha Qty": r.paratha_qty,
+      "Meal Type": r.meal_type,
+      "Item Name": r.item_name,
+      Rate: r.rate,
+      Total: (r.rate || 0) * (r.paratha_qty || 0),
+      Submitted: new Date(r.created_at).toLocaleString(),
+    }));
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Records");
+    const stamp = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `catalyst-msil-food-orders-${stamp}.xlsx`);
   }
 
   const filtered = useMemo(() => {
@@ -318,6 +300,14 @@ export default function AdminPage() {
             />
             <button type="button" onClick={openCreate}>
               + Add record
+            </button>
+            <button
+              type="button"
+              className="neutral"
+              onClick={exportExcel}
+              disabled={records.length === 0}
+            >
+              Export Excel
             </button>
             <button
               type="button"
@@ -508,7 +498,6 @@ export default function AdminPage() {
                     <th>Rate</th>
                     <th>Total</th>
                     <th>Submitted</th>
-                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -532,22 +521,6 @@ export default function AdminPage() {
                           dateStyle: "short",
                           timeStyle: "short",
                         })}
-                      </td>
-                      <td data-label="Actions" className="actions">
-                        <button
-                          type="button"
-                          className="rowbtn"
-                          onClick={() => openEdit(r)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="rowbtn danger"
-                          onClick={() => deleteRecord(r)}
-                        >
-                          Delete
-                        </button>
                       </td>
                     </tr>
                   ))}
